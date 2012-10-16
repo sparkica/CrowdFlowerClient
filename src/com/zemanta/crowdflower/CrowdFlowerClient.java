@@ -17,7 +17,7 @@ public class CrowdFlowerClient{
 	
 	private static String SERVICE_URL = "https://api.crowdflower.com/v1/";
 	private String api_key = "";
-	private int timeout = 500;
+	private int timeout = 1000;
 	
 	public CrowdFlowerClient(String apiKey) {
 		api_key = apiKey;
@@ -75,14 +75,56 @@ public class CrowdFlowerClient{
 		url += "?key=" + api_key;
 		
 		System.out.println("URL: " + url);
-		
-		System.out.println("Type JSON: " + CF_DataType.JSON.toString());
+		System.out.println("Type JSON: " + CF_DataType.JSON.toString());		
 		
 		String results = getJSON(url, "GET", CF_DataType.JSON.toString(), this.timeout);
 		
-		
 		return results;
 		
+	}
+	
+	//TODO: Google Data Protocol's JSON format - can I use the feed instead of file? 
+	//Google Refine IS running as a service
+	
+	
+	
+	private String getJSON(String url, String method, String contentType, int timeout) {
+	    try {
+	        URL u = new URL(url);
+	        HttpURLConnection c = (HttpURLConnection) u.openConnection();
+	        c.setRequestProperty("Accept", "application/json");
+	        c.setRequestProperty("Content-type", contentType);
+	        c.setRequestMethod(method); //GET, SET, ...
+	        c.setRequestProperty("Content-length", "0");
+	        c.setUseCaches(false);
+	        c.setAllowUserInteraction(false);
+	        c.setConnectTimeout(timeout);
+	        c.setReadTimeout(timeout);
+	        c.connect();
+	        int status = c.getResponseCode();
+
+	        System.out.println("Status code: " + status);
+	        switch (status) {
+	            case 200:
+	            case 201:
+	                BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+	                StringBuilder sb = new StringBuilder();
+	                String line;
+	                while ((line = br.readLine()) != null) {
+	                    sb.append(line+"\n");
+	                }
+	                br.close();
+	                return sb.toString();
+	            default:
+	            	System.out.println("Something went wrong, status: " + status);
+	        }
+
+	    } catch (MalformedURLException ex) {
+	    	System.out.println("Malfromed URL exception occured: " + ex.getMessage());
+	    } catch (IOException ex) {
+	    	System.out.println("IOException error occured: " + ex.getMessage());
+	    }
+	    return null;
 	}
 	
 	
@@ -108,42 +150,7 @@ public class CrowdFlowerClient{
 		
 	}
 	
-	
-	private String getJSON(String url, String format, String contentType, int timeout) {
-	    try {
-	        URL u = new URL(url);
-	        HttpURLConnection c = (HttpURLConnection) u.openConnection();
-	        c.setRequestProperty("content-type", contentType);
-	        c.setRequestMethod(format); //GET, SET, ...
-	        c.setRequestProperty("Content-length", "0");
-	        c.setUseCaches(false);
-	        c.setAllowUserInteraction(false);
-	        c.setConnectTimeout(timeout);
-	        c.setReadTimeout(timeout);
-	        c.connect();
-	        int status = c.getResponseCode();
 
-	        switch (status) {
-	            case 200:
-	            case 201:
-	                BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
-	                StringBuilder sb = new StringBuilder();
-	                String line;
-	                while ((line = br.readLine()) != null) {
-	                    sb.append(line+"\n");
-	                }
-	                br.close();
-	                return sb.toString();
-	        }
-
-	    } catch (MalformedURLException ex) {
-	    	System.out.println("Malfromed URL exception occured: " + ex.getMessage());
-	    } catch (IOException ex) {
-	    	System.out.println("IOException error occured: " + ex.getMessage());
-	    }
-	    return null;
-	}
-	
 	
 	private String url_encode(String value) {
 		try {
