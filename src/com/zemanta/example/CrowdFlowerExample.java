@@ -21,16 +21,16 @@ public class CrowdFlowerExample {
 		System.out.println("-----------------------");
 
 		//get data about specific job
-		String job = cf_client.read(jobID);
-		System.out.println(job);
+		//String job = cf_client.read(jobID);
+		//System.out.println(job);
 		
 
 		System.out.println("-----------------------");
 
 		
 		//get all jobs
-		//String myJobs = cf_client.get_all_jobs();
-		//System.out.println(myJobs);
+		String myJobs = cf_client.get_all_jobs();
+		System.out.println(myJobs);
 
 		
 	}
