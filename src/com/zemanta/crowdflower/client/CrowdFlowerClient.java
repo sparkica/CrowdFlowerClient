@@ -3,6 +3,7 @@ package com.zemanta.crowdflower.client;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -37,7 +38,7 @@ public class CrowdFlowerClient{
 		String url = SERVICE_URL + "jobs";
 		url += "?key=" + api_key;
 		
-		String results = getJSON(url, "POST", content_type.toString(), this.timeout);
+		String results = getJSON(url, "POST",CF_DataType.JSON.value(), content_type.toString(), this.timeout);
 		return results;
 	
 	}
@@ -47,12 +48,20 @@ public class CrowdFlowerClient{
 		String url = SERVICE_URL + "jobs";
 		url += "?key=" + api_key;
 		
-		String results = getJSON(url, "POST","" , this.timeout);
+		String results = getJSON(url, "POST",CF_DataType.JSON.value(),"" , this.timeout);
 		return results;
 	
 	}
 	
-	
+	public String bulkUploadJSON(String jobID, String data) {
+		
+		String url = SERVICE_URL + "jobs/" + jobID + "/upload";
+		url += "?key=" + api_key;
+		
+		String results = getJSON(url, "POST", CF_DataType.JSON.value(), data, this.timeout);
+		return results;
+		
+	}
 	
 	public String createEmptyJob(String title, String instructions) {
 		
@@ -68,7 +77,7 @@ public class CrowdFlowerClient{
 		url += strParams;
 		
 		
-		String results = getJSON(url, "POST","" , this.timeout);
+		String results = getJSON(url, "POST",CF_DataType.JSON.value() ,"" , this.timeout);
 		return results;
 	
 	}
@@ -79,7 +88,7 @@ public class CrowdFlowerClient{
 		String url= SERVICE_URL + "jobs/" + job_id + "/upload";
 		url += "?key=" + api_key;
 		
-		String results = getJSON(url, "PUT", content_type.toString(), this.timeout);
+		String results = getJSON(url, "PUT", content_type.value(),"", this.timeout);
 		return results;
 	
 	}
@@ -89,34 +98,46 @@ public class CrowdFlowerClient{
 		String url= SERVICE_URL + "jobs/" + job_id;
 		url += "?key=" + api_key;
 		
-		String results = getJSON(url, "GET", CF_DataType.JSON.toString(), this.timeout);
+		String results = getJSON(url, "GET", CF_DataType.JSON.value(),"", this.timeout);
 		return results;
 	}
 
-	public String get_all_jobs() {
+	public String getAllJobs() {
 		String url = SERVICE_URL + "jobs.json";
 		url += "?key=" + api_key;
 		
 		System.out.println("URL: " + url);
-		System.out.println("Type JSON: " + CF_DataType.JSON.toString());		
+		System.out.println("Type JSON: " + CF_DataType.JSON.value());		
 		
-		String results = getJSON(url, "GET", CF_DataType.JSON.toString(), this.timeout);
+		String results = getJSON(url, "GET", CF_DataType.JSON.value(),"", this.timeout);
 		
 		return results;
 		
 	}
 
 	
-	private String getJSON(String url, String method, String contentType, int timeout) {
-	    try {
+	private String getJSON(String url, String method, String contentType, String content, int timeout) {
+		HttpURLConnection c = null;
+		try {
 	        URL u = new URL(url);
-	        HttpURLConnection c = (HttpURLConnection) u.openConnection();
+	        c = (HttpURLConnection) u.openConnection();
 	        c.setRequestProperty("Accept", "application/json");
 	        c.setRequestProperty("Content-type", contentType);
 	        c.setRequestMethod(method); //GET, SET, ...
-	        c.setRequestProperty("Content-length", "0");
 	        c.setUseCaches(false);
 	        c.setAllowUserInteraction(false);
+	        
+	        if(content!= null) {
+		        c.setDoOutput(true);
+	        	c.setRequestProperty("Content-length", String.valueOf(content.length()));
+	        	OutputStreamWriter osw = new OutputStreamWriter(c.getOutputStream());
+	        	osw.write(content);
+	        	osw.close();
+		        
+	        } else {
+		        c.setRequestProperty("Content-length", "0");
+	        }
+	        
 	        c.setConnectTimeout(timeout);
 	        c.setReadTimeout(timeout);
 	        c.connect();
@@ -142,6 +163,11 @@ public class CrowdFlowerClient{
 	    	System.out.println("Malfromed URL exception occured: " + ex.getMessage());
 	    } catch (IOException ex) {
 	    	System.out.println("IOException error occured: " + ex.getMessage());
+	    }
+	    finally {
+	    	if(c != null) {
+	    		c.disconnect();
+	    	}
 	    }
 	    return null;
 	}

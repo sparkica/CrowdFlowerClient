@@ -13,7 +13,7 @@ public enum CF_DataType {
 		cf_type = data_type;
 	}
 	
-	public String toString() {
+	public String value() {
 		return cf_type;
 	}
 }

@@ -1,5 +1,6 @@
 package com.zemanta.example;
 
+import com.google.gson.JsonObject;
 import com.zemanta.crowdflower.client.*;
 
 public class CrowdFlowerExample {
@@ -9,6 +10,7 @@ public class CrowdFlowerExample {
 
 		String myApi = "4d7e7346df7aecae92259843ca7f7bbad14bdbe2";
 		String jobID = "135723";
+		String jobID2 = "140536";
 		
 		CrowdFlowerClient cf_client = new CrowdFlowerClient(myApi);
 
@@ -23,12 +25,26 @@ public class CrowdFlowerExample {
 		//String job = cf_client.read(jobID);
 		//System.out.println(job);
 		
-
+		JsonObject obj = new JsonObject();
+		obj.addProperty("column_1", "some content");
+		obj.addProperty("column_2", "other content");
+		obj.addProperty("column_3", "yep?");
+				
+		/*String data = "[{'column_1':'You say goodbye'," + 
+				"'column_2':'And I say hello'," + 
+				"'column_3':'Hello, hello'}," + 
+				"{ 'column_1':'I dont know why you say goodbye'," + 
+				"'column_3':'I say hello'" + 
+				"}]";*/
+		
+		String res = cf_client.bulkUploadJSON(jobID2, obj.toString());
+		System.out.println("bulk upload: " + res);
+		
 		System.out.println("-----------------------");
 
 		
 		//get all jobs
-		String myJobs = cf_client.get_all_jobs();
+		String myJobs = cf_client.getAllJobs();
 		System.out.println(myJobs);
 
 		
