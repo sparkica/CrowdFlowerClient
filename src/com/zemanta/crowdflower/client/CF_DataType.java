@@ -1,4 +1,4 @@
-package com.zemanta.crowdflower;
+package com.zemanta.crowdflower.client;
 
 public enum CF_DataType {
 	JSON ("application/json"),
