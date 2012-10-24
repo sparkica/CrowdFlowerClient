@@ -1,4 +1,4 @@
-package com.zemanta.crowdflower;
+package com.zemanta.crowdflower.client;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,10 +8,12 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Map;
 
 
-import com.zemanta.crowdflower.CF_DataType;
+import com.zemanta.crowdflower.client.CF_DataType;
+import com.zemanta.crowdflower.client.CF_JobParameters;
 
 public class CrowdFlowerClient{
 	
@@ -40,10 +42,31 @@ public class CrowdFlowerClient{
 	
 	}
 	
-	public String create_empty_job() {
+	public String createEmptyJob() {
 		
 		String url = SERVICE_URL + "jobs";
 		url += "?key=" + api_key;
+		
+		String results = getJSON(url, "POST","" , this.timeout);
+		return results;
+	
+	}
+	
+	
+	
+	public String createEmptyJob(String title, String instructions) {
+		
+		String url = SERVICE_URL + "jobs";
+		url += "?key=" + api_key + "&";
+		
+		Map<String, String> params = new HashMap<String, String>();
+		params.put(CF_JobParameters.TITLE.value(), title);
+		params.put(CF_JobParameters.INSTRUCTIONS.value(), instructions);
+	
+		String strParams = build_query(params);
+
+		url += strParams;
+		
 		
 		String results = getJSON(url, "POST","" , this.timeout);
 		return results;
@@ -82,11 +105,7 @@ public class CrowdFlowerClient{
 		return results;
 		
 	}
-	
-	//TODO: Google Data Protocol's JSON format - can I use the feed instead of file? 
-	//Google Refine IS running as a service
-	
-	
+
 	
 	private String getJSON(String url, String method, String contentType, int timeout) {
 	    try {
@@ -103,7 +122,7 @@ public class CrowdFlowerClient{
 	        c.connect();
 	        int status = c.getResponseCode();
 
-	        System.out.println("Status code: " + status);
+	        //System.out.println("Status code: " + status);
 	        switch (status) {
 	            case 200:
 	            case 201:
@@ -134,35 +153,21 @@ public class CrowdFlowerClient{
 		try {
 			
 			for (Map.Entry<String, String> entry: parameters.entrySet()) {
-				String key = URLEncoder.encode(entry.getKey(), "UTF-8");
+				String key = entry.getKey();
 				String value = URLEncoder.encode(entry.getValue(),"UTF-8");
-				sb.append(key).append("=").append(value).append("?");
-			}
-			
+				sb.append(key).append("=").append(value).append("&");
+			}	
 		}
 		catch(UnsupportedEncodingException  e)
 		{
 			e.printStackTrace();
 		}
-		
-		
+
 		return sb.toString();
 		
 	}
 	
 
-	
-	private String url_encode(String value) {
-		try {
-			return URLEncoder.encode(value, "UTF-8");
-		}
-		catch (UnsupportedEncodingException e) {
-			System.out.print("Unsuccessful attempt to encode " + value +" into UTF8");
-			System.out.println("Exception: " + e.getMessage());
-		    System.exit(1);
-		}
-		return null;
-	}
 
 
 }
