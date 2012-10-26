@@ -8,7 +8,7 @@ public class CrowdFlowerExample {
 	
 	public static void main(String [] args) {
 
-		String myApi = "4d7e7346df7aecae92259843ca7f7bbad14bdbe2";
+		String myApi = "enter-your-api-key-here";
 		String jobID = "135723";
 		String jobID2 = "140536";
 		
