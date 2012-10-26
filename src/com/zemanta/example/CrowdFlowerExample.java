@@ -29,14 +29,7 @@ public class CrowdFlowerExample {
 		obj.addProperty("column_1", "some content");
 		obj.addProperty("column_2", "other content");
 		obj.addProperty("column_3", "yep?");
-				
-		/*String data = "[{'column_1':'You say goodbye'," + 
-				"'column_2':'And I say hello'," + 
-				"'column_3':'Hello, hello'}," + 
-				"{ 'column_1':'I dont know why you say goodbye'," + 
-				"'column_3':'I say hello'" + 
-				"}]";*/
-		
+						
 		String res = cf_client.bulkUploadJSON(jobID2, obj.toString());
 		System.out.println("bulk upload: " + res);
 		
