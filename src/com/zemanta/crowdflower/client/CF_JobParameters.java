@@ -3,7 +3,8 @@ package com.zemanta.crowdflower.client;
 public enum CF_JobParameters {
 
 	TITLE ("job[title]"),
-	INSTRUCTIONS("job[instructions]");
+	INSTRUCTIONS("job[instructions]"),
+	FORCE("force");
 	
 	private String cf_param;
 	
