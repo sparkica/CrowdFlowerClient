@@ -1,5 +1,8 @@
 package com.zemanta.example;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -58,34 +61,13 @@ public class CrowdFlowerExample {
 		System.out.println("Upload data to new job ...");
 		JsonObject obj = new JsonObject();
 		
-		obj.addProperty("column_1", "èæ");
-		obj.addProperty("column_2", "ð¹");
-		obj.addProperty("column_3", "¾®");
-		obj.addProperty("column_4", "ÈÈ");
-
-		obj.addProperty("column_1", "aa");
-		obj.addProperty("column_2", "bb");
-		obj.addProperty("column_4", "èè");
-
+		obj.addProperty("column_1", "Èum¹um¾um");
+		obj.addProperty("column_2", "Ÿber šber †Š");
 		
-		String response = cf_client.bulkUploadJSONToNewJob(obj.toString()); 
+		String response = "";
+		
+		response = cf_client.bulkUploadJSONToNewJob(obj.toString());
 		System.out.println("Bulk upload status: \n" + response);
-		
-		JsonParser parser = new JsonParser();
-		JsonObject result = (JsonObject)parser.parse(response);
-		
-		if (result.has("response")) {
-			JsonObject r = result.getAsJsonObject("response");
-			
-			if(r.has("id")) {
-				String job_id = r.get("id").getAsString();
-				String new_title = "Something completely different.";
-				
-				response = cf_client.changeJobTitle(job_id, new_title);
-				System.out.println("Renaming new job: \n" + response);
-			}
-			
-		}
 		
 	}
 
@@ -102,10 +84,10 @@ public class CrowdFlowerExample {
 	
 	public static void main(String [] args) {
 
-		String myApiKey = "enter-your-api-key-here";
+		String myApiKey = "enter-your-api-key-here-or-pass-it-as-an-argument";
 		String jobID = "142196";
 		
-		//api key can be passed as an argument
+		//apikey can be passed as an argument
 		if (args.length > 0) {
 			myApiKey = args[0];
 		}
@@ -115,21 +97,16 @@ public class CrowdFlowerExample {
 		CrowdFlowerExample demo = new CrowdFlowerExample();
 
 		//demo.createEmptyJob(cf_client);
-		
-		//-------------------------------
-		
+				
 		//demo.getJobData(cf_client, jobID);
 
-		//-------------------------------
 		
 		//demo.uploadDatatoExistingJob(cf_client, jobID);
 		
-		//-------------------------------
 
-		demo.uploadDataToNewJob(cf_client);
+		//demo.uploadDataToNewJob(cf_client);
 		
-		//-------------------------------
-		//demo.getAllJobs(cf_client);
+		demo.getAllJobs(cf_client);
 		
 		
 		

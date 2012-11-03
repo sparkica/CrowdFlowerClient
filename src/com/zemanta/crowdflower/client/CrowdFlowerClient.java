@@ -169,7 +169,7 @@ public class CrowdFlowerClient{
 	        if(content!= null && content.length() > 0) {
 		        c.setDoOutput(true);
 	        	c.setRequestProperty("Content-length", String.valueOf(content.length()));
-	        	OutputStreamWriter osw = new OutputStreamWriter(c.getOutputStream());
+	        	OutputStreamWriter osw = new OutputStreamWriter(c.getOutputStream(),"UTF8");
 	        	osw.write(content);
 	        	osw.close();
 		        
