@@ -77,7 +77,7 @@ public class CrowdFlowerClient{
 	}
 
 	
-	// Cannot have title and instructions!
+	// Cannot have title and instructions - it fails!
 	public String bulkUploadJSONToNewJob(String data) {
 		
 		String url = SERVICE_URL + "jobs/upload.json?";
@@ -105,6 +105,8 @@ public class CrowdFlowerClient{
 		
 	}
 	
+	
+	//doesn't change the title - API must be broken or something
 	public String changeJobTitle(String job_id, String new_title) {
 		String url= SERVICE_URL + "jobs/" + job_id + ".json?";
 

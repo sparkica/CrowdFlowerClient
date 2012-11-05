@@ -34,11 +34,9 @@ public class CrowdFlowerExample {
 		
 		obj.addProperty("column_1", "11");
 		obj.addProperty("column_2", "2212");
-		obj.addProperty("column_3", "2213");
 		
 		obj2.addProperty("column_1", "2321");
 		obj2.addProperty("column_2", "");
-		obj2.addProperty("column_3", "2322");
 		
 		data.add(obj);
 		data.add(obj2);
@@ -61,8 +59,8 @@ public class CrowdFlowerExample {
 		System.out.println("Upload data to new job ...");
 		JsonObject obj = new JsonObject();
 		
-		obj.addProperty("column_1", "»umπumæum");
-		obj.addProperty("column_2", "über öber Üä");
+		obj.addProperty("column_1", "ƒç≈°≈æƒå≈†≈Ω");
+		obj.addProperty("column_2", "√úber √∂ber √§pfel");
 		
 		String response = cf_client.bulkUploadJSONToNewJob(obj.toString());
 		System.out.println("Bulk upload status: \n" + response);
@@ -103,7 +101,7 @@ public class CrowdFlowerExample {
 
 		//demo.createEmptyJob(cf_client);
 				
-		//demo.getJobData(cf_client, job_id);
+		demo.getJobData(cf_client, job_id);
 
 		
 		//demo.uploadDatatoExistingJob(cf_client, job_id);
@@ -111,7 +109,7 @@ public class CrowdFlowerExample {
 
 		//demo.uploadDataToNewJob(cf_client);
 		
-		demo.renameExistingJob(cf_client, job_id, "New title of the job");
+		//demo.renameExistingJob(cf_client, job_id, "New title of the job");
 		
 		//demo.getAllJobs(cf_client);
 		
