@@ -64,13 +64,18 @@ public class CrowdFlowerExample {
 		obj.addProperty("column_1", "Èum¹um¾um");
 		obj.addProperty("column_2", "Ÿber šber †Š");
 		
-		String response = "";
-		
-		response = cf_client.bulkUploadJSONToNewJob(obj.toString());
+		String response = cf_client.bulkUploadJSONToNewJob(obj.toString());
 		System.out.println("Bulk upload status: \n" + response);
 		
 	}
 
+	public void renameExistingJob(CrowdFlowerClient cf_client, String job_id, String new_title) {
+		
+		System.out.println("Renaming existing job...");
+		String response = cf_client.changeJobTitle(job_id, new_title);
+		System.out.println("Rename status: " + response);
+		
+	}
 	
 	
 	public void getAllJobs(CrowdFlowerClient cf_client) {
@@ -85,7 +90,7 @@ public class CrowdFlowerExample {
 	public static void main(String [] args) {
 
 		String myApiKey = "enter-your-api-key-here-or-pass-it-as-an-argument";
-		String jobID = "142196";
+		String job_id = "142373";
 		
 		//apikey can be passed as an argument
 		if (args.length > 0) {
@@ -98,15 +103,17 @@ public class CrowdFlowerExample {
 
 		//demo.createEmptyJob(cf_client);
 				
-		//demo.getJobData(cf_client, jobID);
+		//demo.getJobData(cf_client, job_id);
 
 		
-		//demo.uploadDatatoExistingJob(cf_client, jobID);
+		//demo.uploadDatatoExistingJob(cf_client, job_id);
 		
 
 		//demo.uploadDataToNewJob(cf_client);
 		
-		demo.getAllJobs(cf_client);
+		demo.renameExistingJob(cf_client, job_id, "New title of the job");
+		
+		//demo.getAllJobs(cf_client);
 		
 		
 		
