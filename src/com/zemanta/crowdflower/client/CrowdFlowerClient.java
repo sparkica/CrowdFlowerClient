@@ -25,6 +25,9 @@ public class CrowdFlowerClient{
 		api_key = apiKey;
 	}
 	
+	public void setTimeout(int milisec) {
+		timeout = milisec;
+		}
 		
 	public String createNewJobWithoutData() {
 		
@@ -113,28 +116,34 @@ public class CrowdFlowerClient{
 		Map<String, String> params = new LinkedHashMap<String, String>();
 		params.put("key", api_key);
 		params.put(CF_JobParameters.TITLE.value(), new_title);
-		params.put(CF_JobParameters.INSTRUCTIONS.value(),"Write some instructions here.");
+		//params.put(CF_JobParameters.INSTRUCTIONS.value(),"Write some instructions here.");
 
 		url += Util.buildQueryFromParameters(params);
 
 		
-		String results = getJSON(url, "PUT", CF_DataType.JSON ,new_title, this.timeout);
+		String results = getJSON(url, "PUT", CF_DataType.JSON , new_title, this.timeout);
 		return results;
 	}
 	
-	
-	
-	public String update(String job_id, CF_DataType content_type){
 		
-		String url= SERVICE_URL + "jobs/" + job_id + "/upload";
-		url += "?key=" + api_key;
+	public String updateJob(String job_id, Map<String, String> params) {
 		
-		String results = getJSON(url, "PUT", content_type,"", this.timeout);
+		String url = SERVICE_URL + "jobs/" + job_id + ".json?";
+		
+		Map<String, String> parameters = new LinkedHashMap<String, String>();
+		parameters.put("key", api_key);
+		parameters.putAll(params);
+			
+		url += Util.buildQueryFromParameters(params);
+		
+		String results = getJSON(url, "PUT", CF_DataType.JSON , "", this.timeout);
+		
 		return results;
-	
+		
 	}
 	
-	public String read(String job_id) {
+	
+	public String getJob(String job_id) {
 		
 		String url= SERVICE_URL + "jobs/" + job_id;
 		url += "?key=" + api_key;
@@ -147,11 +156,47 @@ public class CrowdFlowerClient{
 		String url = SERVICE_URL + "jobs.json";
 		url += "?key=" + api_key;
 		
-		String results = getJSON(url, "GET", CF_DataType.JSON, "", this.timeout);
+		String results = getJSON(url, "GET", CF_DataType.JSON, "", this.timeout*2);
 		
 		return results;
 		
 	}
+	
+	public String copyJob(String job_id) {
+		
+		String url = SERVICE_URL + "jobs/" + job_id + "/copy.json";
+		url += "?key=" + api_key;
+		
+		String results = getJSON(url, "POST", CF_DataType.JSON, "", this.timeout);
+		
+		return results;
+		
+	}
+	
+	public String copyJob(String job_id, Map<String, String> params) {
+		
+		String url = SERVICE_URL + "jobs/" + job_id + "/copy.json?";
+		
+		Map<String, String> params_new = new LinkedHashMap<String, String>();
+		params.put("key", api_key);
+		params.put(CF_JobParameters.FORCE.value(), "true");
+		
+		url += Util.buildQueryFromParameters(params_new);
+		
+		String results = getJSON(url, "POST", CF_DataType.JSON, "", this.timeout);
+		
+		return results;
+	}
+	
+	public String getLegend(String job_id) {
+		
+		String url = SERVICE_URL + "jobs/" + job_id + "/legend";
+		url += "?key=" + api_key;
+		String results = getJSON(url, "GET", CF_DataType.JSON, "", this.timeout);
+		
+		return results;
+	}
+	
 	
 	protected String getJSON(String url, String method, CF_DataType contentType, String content, int timeout) {
 		HttpURLConnection c = null;
@@ -205,10 +250,16 @@ public class CrowdFlowerClient{
             }
             br.close();
             result +=  sb.toString();
+            result += "}";
+
 
 		 } catch (MalformedURLException ex) {
 		    	System.out.println("Malfromed URL exception occured: " + ex.getMessage());
+		    	result = "{\"status\":\"ERROR\", \"message\": \"";
+	    		result += "Malformed URL exception occured. Details: " + ex.getLocalizedMessage() + "\"}";
 	    } catch (IOException ex) {
+	    		result = "{\"status\":\"ERROR\", \"message\": \"";
+	    		result += "IOException occured, check your connection. Details: " + ex.getLocalizedMessage() + "\"}";
 		    	System.out.println("IOException error occured: " + ex.getMessage());
 	    }
 	    finally {
@@ -216,9 +267,12 @@ public class CrowdFlowerClient{
 	    		c.disconnect();
 	    	}
 	    }
-        result += "}";
+        
+        System.out.println("Result from client: " + result);
+        
 	    return result;
 	}
+
 	
 
 }

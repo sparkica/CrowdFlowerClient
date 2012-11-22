@@ -4,7 +4,9 @@ public enum CF_JobParameters {
 
 	TITLE ("job[title]"),
 	INSTRUCTIONS("job[instructions]"),
-	FORCE("force");
+	FORCE("force"),
+	ALL_UNITS("all_units"),
+	GOLD("gold");
 	
 	private String cf_param;
 	

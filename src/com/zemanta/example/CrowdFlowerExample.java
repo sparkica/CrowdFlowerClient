@@ -2,6 +2,7 @@ package com.zemanta.example;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -20,8 +21,17 @@ public class CrowdFlowerExample {
 	
 	public void getJobData(CrowdFlowerClient cf_client, String jobID) {
 		System.out.println("Geting data about particular job ...");
-		String response = cf_client.read(jobID);
+		String response = cf_client.getJob(jobID);
 		System.out.println(response);
+	}
+	
+	
+	public void copyJob(CrowdFlowerClient cf_client, String jobID) {
+		System.out.println("Copying job with default params...");
+		
+		String response = cf_client.copyJob(jobID);
+		System.out.println(response);
+		
 	}
 	
 	public void uploadDatatoExistingJob(CrowdFlowerClient cf_client, String jobID) {
@@ -88,7 +98,7 @@ public class CrowdFlowerExample {
 	public static void main(String [] args) {
 
 		String myApiKey = "enter-your-api-key-here-or-pass-it-as-an-argument";
-		String job_id = "142373";
+		String job_id = "144662";
 		
 		//apikey can be passed as an argument
 		if (args.length > 0) {
@@ -98,10 +108,11 @@ public class CrowdFlowerExample {
 		
 		CrowdFlowerClient cf_client = new CrowdFlowerClient(myApiKey);
 		CrowdFlowerExample demo = new CrowdFlowerExample();
+		cf_client.setTimeout(2000);
 
 		//demo.createEmptyJob(cf_client);
 				
-		demo.getJobData(cf_client, job_id);
+		//demo.getJobData(cf_client, job_id);
 
 		
 		//demo.uploadDatatoExistingJob(cf_client, job_id);
@@ -109,9 +120,11 @@ public class CrowdFlowerExample {
 
 		//demo.uploadDataToNewJob(cf_client);
 		
-		//demo.renameExistingJob(cf_client, job_id, "New title of the job");
+		//demo.renameExistingJob(cf_client, job_id, "Biting the dust 123");
 		
-		//demo.getAllJobs(cf_client);
+		demo.copyJob(cf_client, job_id);
+		
+		demo.getAllJobs(cf_client);
 		
 		
 		
