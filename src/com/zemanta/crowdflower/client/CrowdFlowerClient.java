@@ -197,6 +197,14 @@ public class CrowdFlowerClient{
 		return results;
 	}
 	
+	public String getJobUnits(String job_id) {
+		String url = SERVICE_URL + "jobs/" + job_id + "/units/";
+		url += "?key=" + api_key;
+		String results = getJSON(url, "GET", CF_DataType.JSON, "", this.timeout);
+	
+		return results;
+	}
+	
 	
 	protected String getJSON(String url, String method, CF_DataType contentType, String content, int timeout) {
 		HttpURLConnection c = null;
@@ -255,11 +263,12 @@ public class CrowdFlowerClient{
 
 		 } catch (MalformedURLException ex) {
 		    	System.out.println("Malfromed URL exception occured: " + ex.getMessage());
-		    	result = "{\"status\":\"ERROR\", \"message\": \"";
-	    		result += "Malformed URL exception occured. Details: " + ex.getLocalizedMessage() + "\"}";
+		    	result = "{\"status\":\"ERROR\", \"error\":{\"message\": \"";
+	    		result += "Malformed URL exception occured. Details: " + ex.getLocalizedMessage() + "\"}}";
+	    		
 	    } catch (IOException ex) {
-	    		result = "{\"status\":\"ERROR\", \"message\": \"";
-	    		result += "IOException occured, check your connection. Details: " + ex.getLocalizedMessage() + "\"}";
+	    		result = "{\"status\":\"ERROR\", \"error\":{\"message\": \"";
+	    		result += "IOException occured, check your connection. Details: " + ex.getLocalizedMessage() + "\"}}";
 		    	System.out.println("IOException error occured: " + ex.getMessage());
 	    }
 	    finally {
@@ -267,9 +276,8 @@ public class CrowdFlowerClient{
 	    		c.disconnect();
 	    	}
 	    }
-        
-        System.out.println("Result from client: " + result);
-        
+
+		System.out.println("Result CF client: " + result + "\n");
 	    return result;
 	}
 

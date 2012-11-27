@@ -93,12 +93,18 @@ public class CrowdFlowerExample {
 
 	}
 	
+	public void getJobUnits(CrowdFlowerClient cf_client, String job_id) {
+		System.out.println("Get units of a job");
+		String units = cf_client.getJobUnits(job_id);
+		System.out.println(units);
+	}
+	
 	
 	
 	public static void main(String [] args) {
 
 		String myApiKey = "enter-your-api-key-here-or-pass-it-as-an-argument";
-		String job_id = "144662";
+		String job_id = "142827";
 		
 		//apikey can be passed as an argument
 		if (args.length > 0) {
@@ -122,10 +128,11 @@ public class CrowdFlowerExample {
 		
 		//demo.renameExistingJob(cf_client, job_id, "Biting the dust 123");
 		
-		demo.copyJob(cf_client, job_id);
+		//demo.copyJob(cf_client, job_id);
 		
-		demo.getAllJobs(cf_client);
+		//demo.getAllJobs(cf_client);
 		
+		demo.getJobUnits(cf_client, job_id);
 		
 		
 	}
