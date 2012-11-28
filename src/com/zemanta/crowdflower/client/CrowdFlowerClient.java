@@ -109,18 +109,17 @@ public class CrowdFlowerClient{
 	}
 	
 	
-	//doesn't change the title - API must be broken or something
+	//changes title only if cml field, problem, and instructions are set
+	//no error is returned yet - it's a bug in API (confirmed by CrowdFlower staff in Nov 2012)
 	public String changeJobTitle(String job_id, String new_title) {
 		String url= SERVICE_URL + "jobs/" + job_id + ".json?";
 
 		Map<String, String> params = new LinkedHashMap<String, String>();
 		params.put("key", api_key);
 		params.put(CF_JobParameters.TITLE.value(), new_title);
-		//params.put(CF_JobParameters.INSTRUCTIONS.value(),"Write some instructions here.");
 
 		url += Util.buildQueryFromParameters(params);
 
-		
 		String results = getJSON(url, "PUT", CF_DataType.JSON , new_title, this.timeout);
 		return results;
 	}
