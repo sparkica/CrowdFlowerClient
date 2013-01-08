@@ -6,7 +6,8 @@ public enum CF_JobParameters {
 	INSTRUCTIONS("job[instructions]"),
 	FORCE("force"),
 	ALL_UNITS("all_units"),
-	GOLD("gold");
+	GOLD("gold"),
+	CML("job[cml]");
 	
 	private String cf_param;
 	

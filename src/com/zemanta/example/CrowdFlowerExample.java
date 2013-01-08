@@ -85,9 +85,17 @@ public class CrowdFlowerExample {
 		
 	}
 	
+	public void updateJobCML(CrowdFlowerClient cf_client, String job_id, String cml) {
+		
+		System.out.println("Update CML...");
+		String response = cf_client.upateJobCML(job_id, cml);
+		System.out.println("Update status: " + response);
+		
+	}
+	
 	
 	public void getAllJobs(CrowdFlowerClient cf_client) {
-		System.out.println("Get all jobs ...");
+		System.out.println("Get all jobs 1...");
 		String myJobs = cf_client.getAllJobs();
 		System.out.println(myJobs);
 
@@ -104,7 +112,7 @@ public class CrowdFlowerExample {
 	public static void main(String [] args) {
 
 		String myApiKey = "enter-your-api-key-here-or-pass-it-as-an-argument";
-		String job_id = "142827";
+		String job_id = "154342";
 		
 		//apikey can be passed as an argument
 		if (args.length > 0) {
@@ -114,7 +122,7 @@ public class CrowdFlowerExample {
 		
 		CrowdFlowerClient cf_client = new CrowdFlowerClient(myApiKey);
 		CrowdFlowerExample demo = new CrowdFlowerExample();
-		cf_client.setTimeout(2000);
+		cf_client.setTimeout(5000);
 
 		//demo.createEmptyJob(cf_client);
 				
@@ -130,10 +138,40 @@ public class CrowdFlowerExample {
 		
 		//demo.copyJob(cf_client, job_id);
 		
-		//demo.getAllJobs(cf_client);
+		demo.getAllJobs(cf_client);
 		
-		demo.getJobUnits(cf_client, job_id);
+		//demo.getJobUnits(cf_client, job_id);
+	
+		/*String entityType = "test";
+		String reconSearchUrl = "http://www.example.com";
+		String recon = "test";
+		String cml = "<p>" + 
+				  entityType + ":&#xA0;" +
+				  "{{anchor}}<br />" + entityType + "'s profile page:&#xA0;<a href=\"{{link}}\" target=\"_blank\" id=\"\">" +
+				  "{{link}}</a></p><br />" +
+				  "<hr />" +
+				  "<p>&#xA0;<b>FIRST</b> check suggested links:</p>" +
+					"<ol type=\"1\">" + 
+					"<li>Suggestion 1: <a href=\"{{suggestion_url_1}}\" target=\"_blank\">" + 
+					"{{suggestion_name_1}}</a></li>" + 
+					"<li>Suggestion 2: <a href=\"{{suggestion_url_2}}\" target=\"_blank\">" + 
+					"{{suggestion_name_2}}</a></li>" +
+					"<li>Suggestion 3: <a href=\"{{suggestion_url_3}}\" target=\"_blank\">" +
+					"{{suggestion_name_3}}</a></li>" + 
+					"<li>None of the above matches (<a target=\"_blank\" href=\""+ reconSearchUrl + "\">find page on your own</a>)</li>" +
+					"</ol>" + 
+					"<cml:select label=\"Best suggestion\" validates=\"required\" gold=\"true\" instructions=\"Select the best option for this "+ entityType +".\">" +
+					"    <cml:option label=\"Suggestion 1\" value=\"Suggestion 1\"></cml:option>" +
+					"    <cml:option label=\"Suggestion 2\" value=\"Suggestion 2\"></cml:option>" +
+					"    <cml:option label=\"Suggestion 3\" value=\"Suggestion 3\"></cml:option>" +
+					"    <cml:option label=\"None of the above\" value=\"None of the above\"></cml:option>" +
+					"  </cml:select>" +
+			"<cml:text label=\"Enter "+ recon + " link\" gold=\"true\" only-if=\"best_suggestion:[4]\" instructions=\"Find " + recon + " page for this " + entityType + " and paste it in this field\"  validates=\"url:['non-search']\">"  +
+			"</cml:text>";
 		
+		System.out.println("\n" + cml + "\n");
+		
+		demo.updateJobCML(cf_client, job_id, cml);*/
 		
 	}
 	

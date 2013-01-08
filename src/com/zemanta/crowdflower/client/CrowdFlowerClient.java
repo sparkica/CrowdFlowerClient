@@ -124,6 +124,21 @@ public class CrowdFlowerClient{
 		return results;
 	}
 	
+	
+	public String upateJobCML(String job_id, String cml) {
+		
+		String url= SERVICE_URL + "jobs/" + job_id + ".json?";
+
+		Map<String, String> params = new LinkedHashMap<String, String>();
+		params.put("key", api_key);
+		params.put(CF_JobParameters.CML.value(), cml);
+
+		url += Util.buildQueryFromParameters(params);
+		
+		String results = getJSON(url, "PUT", CF_DataType.JSON , "", this.timeout);
+		return results;
+	}
+	
 		
 	public String updateJob(String job_id, Map<String, String> params) {
 		
@@ -155,7 +170,7 @@ public class CrowdFlowerClient{
 		String url = SERVICE_URL + "jobs.json";
 		url += "?key=" + api_key;
 		
-		String results = getJSON(url, "GET", CF_DataType.JSON, "", this.timeout*2);
+		String results = getJSON(url, "GET", CF_DataType.JSON, null, this.timeout * 2);
 		
 		return results;
 		
@@ -177,8 +192,8 @@ public class CrowdFlowerClient{
 		String url = SERVICE_URL + "jobs/" + job_id + "/copy.json?";
 		
 		Map<String, String> params_new = new LinkedHashMap<String, String>();
-		params.put("key", api_key);
-		params.put(CF_JobParameters.FORCE.value(), "true");
+		params_new.put("key", api_key);
+		params_new.putAll(params);
 		
 		url += Util.buildQueryFromParameters(params_new);
 		
@@ -210,7 +225,8 @@ public class CrowdFlowerClient{
 		String result = "";
 		
 		System.out.println("URL: " + url);
-		
+		System.out.println("Method: " + method);
+		System.out.println("Content: " + content);
 		try {
 	        URL u = new URL(url);
 	        c = (HttpURLConnection) u.openConnection();
@@ -220,7 +236,7 @@ public class CrowdFlowerClient{
 	        c.setUseCaches(false);
 	        c.setAllowUserInteraction(false);
 	        
-	        if(content!= null && content.length() > 0) {
+	        if(content!= null) {
 		        c.setDoOutput(true);
 	        	c.setRequestProperty("Content-length", String.valueOf(content.length()));
 	        	OutputStreamWriter osw = new OutputStreamWriter(c.getOutputStream(),"UTF8");
