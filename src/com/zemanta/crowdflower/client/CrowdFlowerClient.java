@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,23 +21,20 @@ public class CrowdFlowerClient{
 	private static String SERVICE_URL = "https://api.crowdflower.com/v1/";
 	private String api_key = "";
 	private int timeout = 1000;
+	private HttpURLConnection connection;
 	
-	public CrowdFlowerClient(String apiKey) {
+	public CrowdFlowerClient(String apiKey, int defaultTimeout) {
 		api_key = apiKey;
+		connection = null;
+		timeout = defaultTimeout;
 	}
-	
-	public void setTimeout(int milisec) {
-		timeout = milisec;
-		}
-		
+			
 	public String createNewJobWithoutData() {
 		
 		String url = SERVICE_URL + "jobs";
 		url += "?key=" + api_key;
 		
-		String results = getJSON(url, "POST",CF_DataType.JSON, "", this.timeout);
-		return results;
-	
+		return getJSON(url, "POST",CF_DataType.JSON, "", this.timeout);
 	}
 		
 	public String createNewJobWithoutData(String title, String instructions) {
@@ -50,17 +48,16 @@ public class CrowdFlowerClient{
 	
 		url += Util.buildQueryFromParameters(params);
 		
-		String results = getJSON(url, "POST",CF_DataType.JSON , "", this.timeout);
-		return results;
+		return getJSON(url,"POST",CF_DataType.JSON , "", this.timeout);
 	
 	}
 	
 		
 	public String bulkUploadToNewJob(CF_DataType content_type, String data) {
 		
-		String url = SERVICE_URL + "jobs/upload.json?key=" + api_key;		
-		String results = getJSON(url, "POST", content_type, data, this.timeout);
-		return results;		
+		String url = SERVICE_URL + "jobs/upload.json?key=" + api_key;	
+		
+		return getJSON(url, "POST", content_type, data, this.timeout);
 	}
 	
 	
@@ -73,10 +70,9 @@ public class CrowdFlowerClient{
 		params.put(CF_JobParameters.FORCE.value(), "true");
 
 		url += Util.buildQueryFromParameters(params);
-				
-		String results = getJSON(url, "POST", CF_DataType.JSON, data, this.timeout);
-		return results;
 		
+		return getJSON(url, "POST", CF_DataType.JSON, data, this.timeout);
+			
 	}
 
 	
@@ -90,9 +86,9 @@ public class CrowdFlowerClient{
 		params.put(CF_JobParameters.FORCE.value(), "true");
 
 		url += Util.buildQueryFromParameters(params);
+		
+		return getJSON(url, "POST", CF_DataType.JSON, data, this.timeout);
 				
-		String results = getJSON(url, "POST", CF_DataType.JSON, data, this.timeout);
-		return results;
 		
 	}
 
@@ -103,9 +99,7 @@ public class CrowdFlowerClient{
 		String url = SERVICE_URL + "jobs/" + jobID + "/upload";
 		url += "?key=" + api_key;
 		
-		String results = getJSON(url, "POST", content_type, data, this.timeout);
-		return results;
-		
+		return getJSON(url, "POST", content_type, data, this.timeout);
 	}
 	
 	
@@ -119,9 +113,7 @@ public class CrowdFlowerClient{
 		params.put(CF_JobParameters.TITLE.value(), new_title);
 
 		url += Util.buildQueryFromParameters(params);
-
-		String results = getJSON(url, "PUT", CF_DataType.JSON , new_title, this.timeout);
-		return results;
+		return getJSON(url, "PUT", CF_DataType.JSON , new_title, this.timeout);
 	}
 	
 	
@@ -134,9 +126,7 @@ public class CrowdFlowerClient{
 		params.put(CF_JobParameters.CML.value(), cml);
 
 		url += Util.buildQueryFromParameters(params);
-		
-		String results = getJSON(url, "PUT", CF_DataType.JSON , "", this.timeout);
-		return results;
+		return getJSON(url, "PUT", CF_DataType.JSON , "", this.timeout);
 	}
 	
 		
@@ -150,30 +140,24 @@ public class CrowdFlowerClient{
 			
 		url += Util.buildQueryFromParameters(params);
 		
-		String results = getJSON(url, "PUT", CF_DataType.JSON , "", this.timeout);
-		
-		return results;
+		return getJSON(url, "PUT", CF_DataType.JSON , "", this.timeout);
 		
 	}
 	
 	
 	public String getJob(String job_id) {
 		
-		String url= SERVICE_URL + "jobs/" + job_id;
+		String url= SERVICE_URL + "jobs/" + job_id + ".json";
 		url += "?key=" + api_key;
 		
-		String results = getJSON(url, "GET", CF_DataType.JSON, "", this.timeout);
-		return results;
+		return getJSON(url, "GET", CF_DataType.JSON, null, this.timeout);
 	}
 
 	public String getAllJobs() {
 		String url = SERVICE_URL + "jobs.json";
 		url += "?key=" + api_key;
 		
-		String results = getJSON(url, "GET", CF_DataType.JSON, null, this.timeout * 2);
-		
-		return results;
-		
+		return getJSON(url, "GET", CF_DataType.JSON, null, this.timeout * 2);
 	}
 	
 	public String copyJob(String job_id) {
@@ -181,9 +165,7 @@ public class CrowdFlowerClient{
 		String url = SERVICE_URL + "jobs/" + job_id + "/copy.json";
 		url += "?key=" + api_key;
 		
-		String results = getJSON(url, "POST", CF_DataType.JSON, "", this.timeout);
-		
-		return results;
+		return getJSON(url, "POST", CF_DataType.JSON, "", this.timeout);
 		
 	}
 	
@@ -196,106 +178,135 @@ public class CrowdFlowerClient{
 		params_new.putAll(params);
 		
 		url += Util.buildQueryFromParameters(params_new);
-		
-		String results = getJSON(url, "POST", CF_DataType.JSON, "", this.timeout);
-		
-		return results;
+		return getJSON(url, "POST", CF_DataType.JSON, "", this.timeout);
 	}
 	
 	public String getLegend(String job_id) {
 		
 		String url = SERVICE_URL + "jobs/" + job_id + "/legend";
 		url += "?key=" + api_key;
-		String results = getJSON(url, "GET", CF_DataType.JSON, "", this.timeout);
 		
-		return results;
+		return getJSON(url, "GET", CF_DataType.JSON, "", this.timeout);
 	}
 	
 	public String getJobUnits(String job_id) {
 		String url = SERVICE_URL + "jobs/" + job_id + "/units/";
 		url += "?key=" + api_key;
-		String results = getJSON(url, "GET", CF_DataType.JSON, "", this.timeout);
-	
-		return results;
+		return getJSON(url, "GET", CF_DataType.JSON, "", this.timeout);
 	}
 	
+	
+	//todo: refactor this so it will be mockable
+	
+	protected void openConnection(String url) throws MalformedURLException, IOException{	
+
+		if(connection == null) {
+			URL u = new URL(url);	
+			connection =  (HttpURLConnection) u.openConnection();
+		}
+	}
+	
+	public void setHttpURLConnection(HttpURLConnection con) {
+		
+		connection = con;
+	}
+	
+	
+	protected void createRequest(String method, CF_DataType contentType, String content, int timeout) 
+			throws UnsupportedEncodingException, IOException {
+        
+		connection.setRequestProperty("Accept", "application/json");
+		connection.setRequestProperty("Content-type", contentType.value());
+		connection.setRequestMethod(method); //GET, SET, ...
+		connection.setUseCaches(false);
+		connection.setAllowUserInteraction(false);
+        
+        if(content!= null) {
+	        connection.setDoOutput(true);
+        	connection.setRequestProperty("Content-length", String.valueOf(content.length()));
+        	OutputStreamWriter osw = new OutputStreamWriter(connection.getOutputStream(),"UTF8");
+        	osw.write(content);
+        	osw.close();
+	        
+        } else {
+	        connection.setRequestProperty("Content-length", "0");
+        }
+        
+        connection.setConnectTimeout(timeout);
+        connection.setReadTimeout(timeout);
+				
+	}
+	
+	protected String createErrorResponse(String errorType, String details) {
+		String result = "{\"status\":\"ERROR\", \"error\":{\"message\": \"";
+		result += "An exception of type " + errorType + " occured. Details: " + details + "\"}}";
+		
+		return result;
+	}
+	
+	protected String getResponse() {
+
+		String result = "";
+
+		try {
+			connection.connect();
+			int status = connection.getResponseCode();
+		        
+	        BufferedReader br = null;
+	        	        
+	        switch(status) {
+	        	case HttpURLConnection.HTTP_BAD_REQUEST: default:
+	        		br = new BufferedReader(new InputStreamReader(connection.getErrorStream())); break;
+	        	case HttpURLConnection.HTTP_OK: case HttpURLConnection.HTTP_CREATED:
+	        		br = new BufferedReader(new InputStreamReader(connection.getInputStream())); break;
+	        }
+		        
+	        System.out.println("Status: " + status);
+	        result += "{\"status\":" + String.valueOf(status) + ", \"response\" : ";
+		    StringBuilder sb = new StringBuilder();
+	        String line;
+	         while ((line = br.readLine()) != null) {
+	             sb.append(line+"\n");
+	         }
+	         br.close();
+	         result +=  sb.toString();
+	         result += "}";
+
+		}
+		catch (IOException e) {
+			result = createErrorResponse("Input/Output Exception", e.getLocalizedMessage());
+		}
+		finally {
+			connection.disconnect();
+		}
+         
+        return result;
+		
+	}
 	
 	protected String getJSON(String url, String method, CF_DataType contentType, String content, int timeout) {
-		HttpURLConnection c = null;
+
 		String result = "";
-		
-		System.out.println("URL: " + url);
-		System.out.println("Method: " + method);
-		System.out.println("Content: " + content);
 		try {
-	        URL u = new URL(url);
-	        c = (HttpURLConnection) u.openConnection();
-	        c.setRequestProperty("Accept", "application/json");
-	        c.setRequestProperty("Content-type", contentType.value());
-	        c.setRequestMethod(method); //GET, SET, ...
-	        c.setUseCaches(false);
-	        c.setAllowUserInteraction(false);
-	        
-	        if(content!= null) {
-		        c.setDoOutput(true);
-	        	c.setRequestProperty("Content-length", String.valueOf(content.length()));
-	        	OutputStreamWriter osw = new OutputStreamWriter(c.getOutputStream(),"UTF8");
-	        	osw.write(content);
-	        	osw.close();
-		        
-	        } else {
-		        c.setRequestProperty("Content-length", "0");
-	        }
-	        
-	        c.setConnectTimeout(timeout);
-	        c.setReadTimeout(timeout);
-	        c.connect();
-	        int status = c.getResponseCode();
-	        
-	        BufferedReader br = null;
-	        
-	        switch(status) {
-	        	case 404: default:
-	        		br = new BufferedReader(new InputStreamReader(c.getErrorStream())); break;
-	        	case 200: case 201:
-	        		br = new BufferedReader(new InputStreamReader(c.getInputStream())); break;
-	        }
-	        
-	        //add status code to response
-	        System.out.println("Status: " + status);
-	        result += "{status:" + String.valueOf(status) + ", response : ";
-	        
-	        
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = br.readLine()) != null) {
-                sb.append(line+"\n");
-            }
-            br.close();
-            result +=  sb.toString();
-            result += "}";
-
-
-		 } catch (MalformedURLException ex) {
-		    	System.out.println("Malfromed URL exception occured: " + ex.getMessage());
-		    	result = "{\"status\":\"ERROR\", \"error\":{\"message\": \"";
-	    		result += "Malformed URL exception occured. Details: " + ex.getLocalizedMessage() + "\"}}";
-	    		
-	    } catch (IOException ex) {
-	    		result = "{\"status\":\"ERROR\", \"error\":{\"message\": \"";
-	    		result += "IOException occured, check your connection. Details: " + ex.getLocalizedMessage() + "\"}}";
-		    	System.out.println("IOException error occured: " + ex.getMessage());
-	    }
-	    finally {
-	    	if(c != null) {
-	    		c.disconnect();
-	    	}
-	    }
-
-		System.out.println("Result CF client: " + result + "\n");
-	    return result;
+			openConnection(url);
+			createRequest(method, contentType, content, timeout);
+			result =  getResponse();
+		}
+		catch (MalformedURLException ex) {
+			result = createErrorResponse("Malformed URL", ex.getLocalizedMessage());
+		}
+		catch (IOException e) {
+			result = createErrorResponse("Input/Output Exception", e.getLocalizedMessage());
+		}
+		catch (Exception e2) {
+			result = createErrorResponse("Unspecified Exception", e2.getLocalizedMessage());
+		} finally {
+			connection.disconnect();
+			connection = null;	
+		}
+		
+		return result;
 	}
-
 	
 
 }

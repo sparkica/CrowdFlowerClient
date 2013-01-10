@@ -119,14 +119,13 @@ public class CrowdFlowerExample {
 			myApiKey = args[0];
 		}
 		
-		
-		CrowdFlowerClient cf_client = new CrowdFlowerClient(myApiKey);
+		int defaultTimeout = 3000;
+		CrowdFlowerClient cf_client = new CrowdFlowerClient(myApiKey, defaultTimeout);
 		CrowdFlowerExample demo = new CrowdFlowerExample();
-		cf_client.setTimeout(5000);
 
 		//demo.createEmptyJob(cf_client);
 				
-		//demo.getJobData(cf_client, job_id);
+		demo.getJobData(cf_client, job_id);
 
 		
 		//demo.uploadDatatoExistingJob(cf_client, job_id);
@@ -138,7 +137,7 @@ public class CrowdFlowerExample {
 		
 		//demo.copyJob(cf_client, job_id);
 		
-		demo.getAllJobs(cf_client);
+		//demo.getAllJobs(cf_client);
 		
 		//demo.getJobUnits(cf_client, job_id);
 	
