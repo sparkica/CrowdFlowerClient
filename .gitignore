@@ -1,2 +1,13 @@
+.settings
+.project
+.classpath
+
 data/
 bin/
+
+
+.idea/
+*.iml
+
+
+target/
