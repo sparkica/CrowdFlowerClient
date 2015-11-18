@@ -1,12 +1,8 @@
-package com.zemanta.example;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.HashMap;
+package com.zemanta.crowdflower.example;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+
 import com.zemanta.crowdflower.client.*;
 
 public class CrowdFlowerExample {
@@ -26,13 +22,7 @@ public class CrowdFlowerExample {
 	}
 	
 	
-	public void copyJob(CrowdFlowerClient cf_client, String jobID) {
-		System.out.println("Copying job with default params...");
-		
-		String response = cf_client.copyJob(jobID);
-		System.out.println(response);
-		
-	}
+
 	
 	public void uploadDatatoExistingJob(CrowdFlowerClient cf_client, String jobID) {
 		
@@ -77,13 +67,6 @@ public class CrowdFlowerExample {
 		
 	}
 
-	public void renameExistingJob(CrowdFlowerClient cf_client, String job_id, String new_title) {
-		
-		System.out.println("Renaming existing job...");
-		String response = cf_client.changeJobTitle(job_id, new_title);
-		System.out.println("Rename status: " + response);
-		
-	}
 	
 	public void updateJobCML(CrowdFlowerClient cf_client, String job_id, String cml) {
 		
@@ -93,13 +76,7 @@ public class CrowdFlowerExample {
 		
 	}
 	
-	
-	public void getAllJobs(CrowdFlowerClient cf_client) {
-		System.out.println("Get all jobs 1...");
-		String myJobs = cf_client.getAllJobs();
-		System.out.println(myJobs);
 
-	}
 	
 	public void getJobUnits(CrowdFlowerClient cf_client, String job_id) {
 		System.out.println("Get units of a job");

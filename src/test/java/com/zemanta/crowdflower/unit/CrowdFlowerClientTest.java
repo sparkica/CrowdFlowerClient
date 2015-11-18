@@ -1,4 +1,4 @@
-package com.zemanta.crowdflower.test;
+package com.zemanta.crowdflower.unit;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

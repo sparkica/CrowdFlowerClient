@@ -1,2 +1,15 @@
+.settings
+.project
+.classpath
+
 data/
 bin/
+
+
+.idea/
+*.iml
+
+
+target/
+
+src/test/resources/default.properties
