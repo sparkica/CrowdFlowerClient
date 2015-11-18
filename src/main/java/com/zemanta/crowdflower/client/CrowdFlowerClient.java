@@ -1,20 +1,15 @@
 package com.zemanta.crowdflower.client;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Properties;
 
 
-import com.zemanta.crowdflower.client.CF_DataType;
-import com.zemanta.crowdflower.client.CF_JobParameters;
-import com.zemanta.util.Util;
+import com.zemanta.crowdflower.util.Util;
 
 public class CrowdFlowerClient{
 	
@@ -22,7 +17,9 @@ public class CrowdFlowerClient{
 	private String api_key = "";
 	private int timeout = 1000;
 	private HttpURLConnection connection;
-	
+
+
+
 	public CrowdFlowerClient(String apiKey, int defaultTimeout) {
 		api_key = apiKey;
 		connection = null;
@@ -93,7 +90,10 @@ public class CrowdFlowerClient{
 	}
 
 	
-	
+	public String bulkUploadToExistingJob_csvFile(String jobID, String data){
+		return this.bulkUploadToExistingJob(jobID,CF_DataType.SPREADSHEET_CSV,data);
+	}
+
 	public String bulkUploadToExistingJob(String jobID, CF_DataType content_type, String data) {
 
 		String url = SERVICE_URL + "jobs/" + jobID + "/upload";
@@ -160,15 +160,20 @@ public class CrowdFlowerClient{
 		return getJSON(url, "GET", CF_DataType.JSON, null, this.timeout * 2);
 	}
 	
+
 	public String copyJob(String job_id) {
-		
+
 		String url = SERVICE_URL + "jobs/" + job_id + "/copy.json";
 		url += "?key=" + api_key;
-		
+
 		return getJSON(url, "POST", CF_DataType.JSON, "", this.timeout);
-		
 	}
-	
+	public String copyJob_onlyGolden(String job_id) {
+		Map<String, String> params = new LinkedHashMap<String, String>();
+		params.put("gold","true");
+		return this.copyJob(job_id,params);
+	}
+
 	public String copyJob(String job_id, Map<String, String> params) {
 		
 		String url = SERVICE_URL + "jobs/" + job_id + "/copy.json?";
@@ -261,7 +266,7 @@ public class CrowdFlowerClient{
 	        		br = new BufferedReader(new InputStreamReader(connection.getInputStream())); break;
 	        }
 		        
-	        System.out.println("Status: " + status);
+	        //System.out.println("Status: " + status);
 	        result += "{\"status\":" + String.valueOf(status) + ", \"response\" : ";
 		    StringBuilder sb = new StringBuilder();
 	        String line;
@@ -307,6 +312,7 @@ public class CrowdFlowerClient{
 		
 		return result;
 	}
-	
+
+
 
 }

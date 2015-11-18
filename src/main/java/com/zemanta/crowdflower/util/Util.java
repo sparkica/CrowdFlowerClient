@@ -1,4 +1,4 @@
-package com.zemanta.util;
+package com.zemanta.crowdflower.util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

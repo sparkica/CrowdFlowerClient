@@ -11,3 +11,5 @@ bin/
 
 
 target/
+
+src/test/resources/default.properties
